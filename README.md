@@ -7,6 +7,11 @@ I made this for learning porpuses and have loads of ideas to improve it :).
 # Libraries used
 - wxPython
 - Pytube
-
+# How to install
+This application requires [ffmpeg](https://www.ffmpeg.org/download.html) to work so make sure you have it installed.
+- Grab the latest build from the [Release](https://github.com/This-Is-a-Username-lol/Tube-downloader/releases) page.
+- Extract it where you want
+- ```cd``` into where you extracted it
+- ```./tube-downloader```
 # How this tool works
 It downloads the audio and video separately with pytube and then it uses ffmpeg to combine them and creat one video file.
