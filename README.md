@@ -21,5 +21,19 @@ This application requires [ffmpeg](https://www.ffmpeg.org/download.html) to work
 
 I'm currently working on adding windows support.
 
+# How to build
+**requierments:**
+- [Python3](https://www.python.org/)
+- [wxPython](https://www.wxpython.org/pages/downloads/)
+- [Pytube](https://pypi.org/project/pytube/)
+- [cx_Freeze](https://pypi.org/project/cx-Freeze/)
+
+**build**
+
+- ```git clone https://github.com/This-Is-a-Username-lol/Tube-downloader.git```
+- ```cd Tube-downloader```
+- Configure setup.py if you know what you're doing, If not go to the next step
+- ```python3 setup.py build```
+
 # How this tool works
 It downloads the audio and video separately with pytube and then it uses ffmpeg to combine them and creat one video file.
