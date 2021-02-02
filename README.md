@@ -4,6 +4,7 @@
 A lightweight GUI application for downloading Youtube videos with fast speed and high quality, It requires ffmpeg to work.
 I made this for learning porpuses and have loads of ideas to improve it :).
 
+**Note:** this is a test repo for me to get familiar with github and get some feedback on the app, I might delete it soon and change the name of the app. 
 # Libraries used
 - wxPython
 - Pytube
