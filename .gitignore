@@ -1,3 +1,4 @@
 # Ignore Python related files
 .venv
 .pyc
+__pycache__
