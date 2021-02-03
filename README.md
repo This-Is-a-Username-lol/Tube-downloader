@@ -33,6 +33,7 @@ I'm currently working on adding windows support.
 
 - ```git clone https://github.com/This-Is-a-Username-lol/Tube-downloader.git```
 - ```cd Tube-downloader```
+- ```pip install -r requirements.txt```
 - Configure setup.py if you know what you're doing, If not go to the next step
 - ```python3 setup.py build```
 
