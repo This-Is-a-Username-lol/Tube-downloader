@@ -5,4 +5,4 @@ import logging
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 def get_logger(logger_name):
-    return logging.get_logger(logger_name)
+    return logging.getLogger(logger_name)
