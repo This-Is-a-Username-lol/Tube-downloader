@@ -3,11 +3,20 @@ import os
 import wx
 import wx.lib.filebrowsebutton
 from pytube import YouTube
+from logger import get_logger
+from util import delete_file
 #import wx.lib.inspection
 
-resolution = '480p'
+log = get_logger('tube-downloader.py')
 
 class MyFrame(wx.Frame):
+    # class member variables
+    out_path = ''
+    request_url = ''
+    resolution_px = '480'
+    file_name = ''
+    yt = ''
+    error_exists = False
 
     def __init__(self, parent, title):
         wx.Frame.__init__(self, parent, title=title, size=wx.Size(500, 257))
@@ -69,13 +78,12 @@ class MyFrame(wx.Frame):
         self.Show(True)
 
     def getInputData(self):
-        global url, outPath, resolution, fileName, yt
 
-        url = self.input1.GetValue() #https://www.youtube.com/watch?v=O2deXwf4drE // https://www.youtube.com/watch?v=ARoe7vXa1Ek
-        resolution = self.input3.GetString(n=self.input3.GetSelection())
-        outPath = self.dirInput.GetValue()
-        fileName = self.input4.GetValue()
-        yt = YouTube(url)
+        self.request_url = self.input1.GetValue() #https://www.youtube.com/watch?v=O2deXwf4drE // https://www.youtube.com/watch?v=ARoe7vXa1Ek
+        self.resolution_px = self.input3.GetString(n=self.input3.GetSelection())
+        self.out_path = self.dirInput.GetValue()
+        self.file_name = self.input4.GetValue()
+        self.yt = YouTube(url)
         #if fileName == '':
             #fileName = yt.title
 
@@ -87,37 +95,47 @@ class MyFrame(wx.Frame):
         dlg.ShowModal()
 
     def checkUserInput(self):
-        global errorExist
-
-        if outPath[-1] == '/' or ' ' in fileName:
+        if self.out_path[-1] == '/' or ' ' in self.file_name:
             self.messageBox('[Error] make sure that:\n- The filename does not have spaces\n- The output path does not end with "/"')
-            errorExist = True
+            self.error_exists = True
         else:
-            errorExist = False
+            self.error_exists = False
 
     def download_video(self):
-        print('>>> Downloading video...')
-        yt.streams.filter(res=resolution, subtype='mp4').first().download(outPath, 'video') #, only_video=True, subtype='mp4'
-        print('>>> Downloading audio..')
-        yt.streams.get_audio_only(subtype='mp4').download(outPath, 'audio')
-        print('>>> Combining audio and video...')
-        os.system('ffmpeg -i '+ outPath + '/' + 'video.mp4 -i '+ outPath + '/' + 'audio.mp4 -c copy -map 0:v:0 -map 1:a:0 ' + outPath + '/' + fileName + '.mp4')
-        os.system('rm ' + outPath + '/' + 'video.mp4 && rm ' + outPath + '/' + 'audio.mp4')
+        log.info('>>> Downloading video...')
+        self.yt.streams.filter(res=self.resolution_px, subtype='mp4').first().download(self.out_path, 'video') #, only_video=True, subtype='mp4'
+    
+    def download_audio(self):
+        log.info('>>> Downloading audio..')
+        self.yt.streams.get_audio_only(subtype='mp4').download(self.out_path, 'audio')
+    
+    def generate_media_file(self):
+        log.info('>>> Combining audio and video...')
+        ffmpeg_exec_path = f'ffmpeg -i {self.out_path}/video.mp4 -i {self.out_path}/audio.mp4 -c copy -map 0:v:0 -map 1:a:0 {self.out_path}/{self.file_name}.mp4'
+        os.system(ffmpeg_exec_path)
+        
+    def remove_temp_files(self):
+        file_temp_video = f'{self.out_path}/video.mp4'
+        file_temp_audio = f'{self.out_path}/audio.mp4'
+        delete_file(file_temp_video)
+        delete_file(file_temp_audio)
 
     def onDownload(self, e):
         try:
             self.getInputData()
             self.checkUserInput()
-            if errorExist == False:
-                print('>>> Download started...')
-                self.download_video()
-                self.messageBox('Download finished!')
-            else:
-                print('Oops! there seems to be an error.')
+            if self.error_exists:
+                log.error('Oops! there seems to be an error.')
                 return
+            log.info('>>> Download started...')
+            self.download_video()
+            self.download_audio()
+            self.generate_media_file()
+            self.remove_temp_files()
+            self.messageBox('Download finished!')  
         except:
             self.messageBox('[Error] either:\n- Invalid link\n- Resolution is not supported by the video')
-            print('Oops! there seems to be an error.')
+            self.error(f'Failed to complete download procedure with error: {sys.exc_info()[0]}')
 
 if __name__ == "__main__":
     app = wx.App(False)
