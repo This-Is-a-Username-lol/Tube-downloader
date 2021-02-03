@@ -3,7 +3,7 @@
 import os
 from pathlib import Path
 from sys import platform
-import get_logger from logger
+from logger import get_logger
 
 log = get_logger('util.py')
 
