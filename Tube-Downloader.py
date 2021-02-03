@@ -83,7 +83,7 @@ class MyFrame(wx.Frame):
         self.resolution_px = self.input3.GetString(n=self.input3.GetSelection())
         self.out_path = self.dirInput.GetValue()
         self.file_name = self.input4.GetValue()
-        self.yt = YouTube(url)
+        self.yt = YouTube(self.request_url)
         #if fileName == '':
             #fileName = yt.title
 
